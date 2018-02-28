@@ -1,0 +1,9 @@
+{
+    "name": "wshaman/s",
+    "autoload":{
+        "psr-4": {
+            "WsTest\\" : "src/"
+        }
+    },
+    "require": {}
+}
