@@ -8,7 +8,7 @@
 
 return [
     'secure' => false,
-    'host' => '127.0.0.0:9009',
+    'host' => '127.0.0.0',
     'port' => 9009,
     'path' => ''
 ];

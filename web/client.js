@@ -23,7 +23,9 @@ var Client = {
             self.socket.onopen = self._log.info("Welcome - status " + self.socket.readyState);
             self.socket.onmessage = self.received;
             self.socket.onclose = self._log.info("Disconnected - status " + self.socket.readyState);
-            self._send(34567897654)
+            self.request.send('register', self.personal, function (message) {
+                self._log.info(message.data)
+            })
         }
         catch (ex) {
             self._log.error(ex);
@@ -34,6 +36,8 @@ var Client = {
     },
     request: {
         _waitForResponce: function(id, callback){
+            return true;
+            //@nb: should be simplified for this use-case. We have no need to catch this on JS side at all.
             var self = Client;
             setTimeout(
                 function () {
@@ -65,8 +69,9 @@ var Client = {
         }
     },
     received: function (message) {
-        // this._log.info("Received: " + message.data);
-        this.lastResponse = message.data;
+        // @nb: no need to make magic here after initial request. Should be removed?
+        console.log("Received: " + message.data);
+        // this. = message.data;
     },
     _log: {
         log: function (message) {
