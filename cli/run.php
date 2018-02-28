@@ -10,7 +10,10 @@ require "../vendor/autoload.php";
 
 use WsTest\ws\Server;
 
-$s = new Server("127.0.0.1", 9009);
+$config = require("../config/ws.php");
+
+
+$s = new Server($config['host'], $config['port']);
 
 try {
     $s->run();
