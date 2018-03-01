@@ -11,8 +11,24 @@ namespace WsTest\ws;
 
 class Server extends WebSocketServer
 {
+
+
+    private function _readJson($data){
+
+    }
+
+    private function _register(int $user_id, int $task_id, object $user)
+    {
+
+    }
+
     protected function process($user, $message)
     {
+        $data = (new JsonRpcObject())->fromString($message);
+        switch ($data->method){
+            case 'register':
+
+        }
         $this->send($user, $message);
         // TODO: Implement process() method.
     }

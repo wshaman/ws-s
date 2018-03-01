@@ -11,13 +11,15 @@ abstract class WebSocketServer {
     protected $userClass = 'WsTest\ws\WebSocketUser'; // redefine this if you want a custom user class.  The custom user class should inherit from WebSocketUser.
     protected $maxBufferSize;
     protected $master;
-    protected $sockets                              = array();
-    protected $users                                = array();
-    protected $heldMessages                         = array();
+    protected $sockets                              = [];
+    /** @var WebSocketUser[] */
+    protected $users                                = [];
+    protected $heldMessages                         = [];
     protected $interactive                          = true;
     protected $headerOriginRequired                 = false;
     protected $headerSecWebSocketProtocolRequired   = false;
     protected $headerSecWebSocketExtensionsRequired = false;
+
     function __construct($addr, $port, $bufferLength = 2048) {
         $this->maxBufferSize = $bufferLength;
         $this->master = socket_create(AF_INET, SOCK_STREAM, SOL_TCP)  or die("Failed: socket_create()");
@@ -28,6 +30,7 @@ abstract class WebSocketServer {
         $this->stdout("Server started\nListening on: $addr:$port\nMaster socket: ".$this->master);
 
     }
+
     abstract protected function process($user,$message); // Called immediately when the data is recieved.
     abstract protected function connected($user);        // Called after the handshake response is sent to the client.
     abstract protected function closed($user);           // Called after the connection is closed.
