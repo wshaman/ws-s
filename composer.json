@@ -1,9 +1,14 @@
 {
-    "name": "wshaman/s",
-    "autoload":{
-        "psr-4": {
-            "WsTest\\" : "src/"
-        }
-    },
-    "require": {}
+  "name": "wshaman/s",
+  "autoload": {
+    "psr-4": {
+      "WsTest\\": "src/"
+    }
+  },
+  "require": {
+    "ratchet/pawl": "*"
+  },
+  "requireOff": {
+    "hemiframe/php-websocket": "^1.5"
+  }
 }

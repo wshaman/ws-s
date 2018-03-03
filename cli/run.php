@@ -6,18 +6,16 @@
  * Time: 1:06 PM
  */
 
-require "../vendor/autoload.php";
+require __DIR__ . DIRECTORY_SEPARATOR . "../vendor/autoload.php";
 
 use WsTest\ws\Server;
 
-$config = require("../config/ws.php");
+$config = new \WsTest\tools\Config();
 
-
-$s = new Server($config['host'], $config['port']);
+$s = new Server($config->read('host'), $config->read('port'));
 
 try {
     $s->run();
-}
-catch (Exception $e) {
+} catch (Exception $e) {
     $s->stdout($e->getMessage());
 }

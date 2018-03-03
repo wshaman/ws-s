@@ -51,7 +51,38 @@ class Server extends WebSocketServer
         return "user registration failed";
     }
 
-    private function _answer(int $id, object $user, mixed $message)
+    private function _userList()
+    {
+        $this->_setStatus(Constants::STATUS_OK);
+        $list = array_values(array_map(function ($i) {
+            return ['user_id' => $i->user_id, 'task_id' => $i->task_id];
+        }, $this->users));
+        $res = [];
+        foreach ($list as $item){
+            if($item['user_id'] && $item['task_id'])
+                $res[] = "{$item['user_id']}:{$item['task_id']}";
+        }
+        return implode("\n", $res);
+    }
+
+    private function _userTasks($uid)
+    {
+        $this->_setStatus(Constants::STATUS_OK);
+        $my =
+            array_values(array_map(function ($i) {
+                return $i->task_id;
+            },
+                array_filter($this->users, function ($i) use ($uid) {return $i->user_id == $uid;})
+            ));
+        return implode(",", $my);
+    }
+
+    private function _sendMessage(int $user_id, int $task_id, string $message)
+    {
+
+    }
+
+    private function _answer(int $id, object $user, $message)
     {
         $st = $this->_flushStatus();
         $answer = (new JsonRpcResponse($id));
@@ -59,6 +90,8 @@ class Server extends WebSocketServer
         else $answer->fromError($message);
         $this->send($user, $answer->stringify());
     }
+
+
 
     protected function process($user, $message)
     {
@@ -68,6 +101,14 @@ class Server extends WebSocketServer
             case 'register':
                 $response = $this->_register($data->params['user_id'], $data->params['task_id'], $user);
                 break;
+            case 'user-list':
+                $response = $this->_userList();
+                break;
+            case 'user-task':
+                $response = $this->_userTasks($data->params[0]);
+                break;
+            case "send-message":
+
             default :
                 $this->_setStatus(Constants::STATUS_FAIL);
                 $response = "{$data->method} not implemented (yet)";
@@ -82,6 +123,7 @@ class Server extends WebSocketServer
 
     protected function closed($user)
     {
+//        unset($this->users[$user->id]);
         // TODO: Implement closed() method.
     }
 

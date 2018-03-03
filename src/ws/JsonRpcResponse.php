@@ -20,6 +20,15 @@ class JsonRpcResponse
         $this->id = $id;
     }
 
+    public function fromString(string $message)
+    {
+        $p = json_decode($message, true);
+        $this->id = $p['id'];
+        if(array_key_exists('message', $p)) $this->message = $p['message'];
+        if(array_key_exists('error', $p)) $this->error = $p['error'];
+        return $this;
+    }
+
     public function fromError(string $message): JsonRpcResponse
     {
         $this->message = null;
@@ -27,7 +36,7 @@ class JsonRpcResponse
         return $this;
     }
 
-    public function fromMessage(mixed $message): JsonRpcResponse
+    public function fromMessage($message): JsonRpcResponse
     {
         $this->error = null;
         $this->message = $message;
