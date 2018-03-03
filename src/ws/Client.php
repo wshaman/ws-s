@@ -60,10 +60,10 @@ class Client
         $this->_ask('user-task', [$uid]);
     }
 
-    public function sendMessage(int $uid, int $task_id, string $message)
+    public function sendMessage(int $uid, int $task_id=0, string $message)
     {
-        $params = ["user_id"=> $uid, $message=>$message];
-        if($task_id) $params["task_id"] = $task_id;
+        $params = [$uid, $task_id, $message];
+//        $params["task_id"] = ($task_id) ? $task_id : 0;
         $this->_ask('send-message', $params);
     }
 }

@@ -23,7 +23,7 @@ var Client = {
             self.socket.onopen = self._log.info("Welcome - status " + self.socket.readyState);
             self.socket.onmessage = self.received;
             self.socket.onclose = self._log.info("Disconnected - status " + self.socket.readyState);
-            self.request.send('register', self.personal, function (message) {
+            self.request.send('register', [self.personal.user_id, self.personal.task_id], function (message) {
                 self._log.info(message.data)
             })
         }
@@ -31,7 +31,7 @@ var Client = {
             self._log.error(ex);
         }
     },
-    setRecepient: function(callback){
+    setOnReceived: function(callback){
         this.socket.onmessage = callback;
     },
     request: {

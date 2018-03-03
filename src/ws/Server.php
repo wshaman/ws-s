@@ -79,7 +79,23 @@ class Server extends WebSocketServer
 
     private function _sendMessage(int $user_id, int $task_id, string $message)
     {
-
+        if($user_id == 0){
+            //@nb: send to all
+            $users = $this->users;
+        } else {
+            $users = array_filter($this->users, function ($i) use ($user_id, $task_id) {
+            return $i->user_id == $user_id && ($task_id == 0 || $i->user_id == $task_id);
+            });
+        }
+        if (count($users) == 0){
+            $this->_setStatus(Constants::STATUS_FAIL);
+            return "No users matching criteria found";
+        }
+        foreach ($users as $user) {
+            $this->send($user, $message);
+        }
+        $this->_setStatus(Constants::STATUS_OK);
+        return "Sent messages: " . count($users);
     }
 
     private function _answer(int $id, object $user, $message)
@@ -99,7 +115,7 @@ class Server extends WebSocketServer
         $response = null;
         switch ($data->method) {
             case 'register':
-                $response = $this->_register($data->params['user_id'], $data->params['task_id'], $user);
+                $response = $this->_register($data->params[0], $data->params[1], $user);
                 break;
             case 'user-list':
                 $response = $this->_userList();
@@ -108,7 +124,9 @@ class Server extends WebSocketServer
                 $response = $this->_userTasks($data->params[0]);
                 break;
             case "send-message":
-
+                var_dump($data->params);
+                $response = $this->_sendMessage(...$data->params);
+                break;
             default :
                 $this->_setStatus(Constants::STATUS_FAIL);
                 $response = "{$data->method} not implemented (yet)";

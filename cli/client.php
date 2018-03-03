@@ -37,7 +37,12 @@ function parseParams(array $arguments): array
 
 function hasParamValue(array $params, string $key) {
     $p = array_values(array_filter($params, function ($i) use ($key) {return $i[0] == $key;}));
-    return (!$p[1]) ? null : $p[1];
+    if(count($p)>0) {
+        $p = $p[0];
+        return (!isset($p[1])) ? null : $p[1];
+    } else {
+        return null;
+    }
 }
 
 if ($argc < 2) {
@@ -65,6 +70,7 @@ switch ($params[0][0]) {
         if(!is_numeric($user_id)) help($argv[0]);
         if(!is_string($message)) help($argv[0]);
         if($task_id && !is_numeric($task_id)) help($argv[0]);
+        if(!$task_id) $task_id = 0;
         $wsClient->sendMessage($user_id, $task_id, $message);
         break;
     default:
