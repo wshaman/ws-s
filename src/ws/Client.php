@@ -41,12 +41,12 @@ class Client
             $conn->on('message', function($msg) use ($conn) {
                 $json = (new JsonRpcResponse(0))->fromString($msg);
                 if($json->error) EchoLog::error($json->error);
-                if($json->message) EchoLog::log($json->message);
+                if($json->message) EchoLog::ok($json->message);
                 $conn->close();
             });
             $conn->send($json->stringify());
         }, function ($e) {
-            echo "Could not connect: {$e->getMessage()}\n";
+            EchoLog::error("Could not connect: {$e->getMessage()}");
         });
     }
 
@@ -63,7 +63,6 @@ class Client
     public function sendMessage(int $uid, int $task_id=0, string $message)
     {
         $params = [$uid, $task_id, $message];
-//        $params["task_id"] = ($task_id) ? $task_id : 0;
         $this->_ask('send-message', $params);
     }
 }

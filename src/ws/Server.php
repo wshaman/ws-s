@@ -87,7 +87,7 @@ class Server extends WebSocketServer
             $users = $this->users;
         } else {
             $users = array_filter($this->users, function ($i) use ($user_id, $task_id) {
-            return $i->user_id == $user_id && ($task_id == 0 || $i->user_id == $task_id);
+            return $i->user_id == $user_id && ($task_id == 0 || $i->task_id == $task_id);
             });
         }
         if (count($users) == 0){
@@ -100,7 +100,7 @@ class Server extends WebSocketServer
             $this->send($user, $json->stringify());
         }
         $this->_setStatus(Constants::STATUS_OK);
-        return "Sent messages: " . count($users);
+        return "Messages sent: " . count($users);
     }
 
     private function _answer(int $id, object $user, $message)
