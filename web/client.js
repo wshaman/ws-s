@@ -32,7 +32,7 @@ var Client = {
         }
     },
     setOnReceived: function(callback){
-        this.socket.onmessage = callback;
+        Client.socket.onmessage = callback;
     },
     request: {
         _waitForResponce: function(id, callback){
@@ -103,6 +103,7 @@ var Client = {
             function () {
                 if (self.socket.readyState === 1) {
                     self._log.info("Connection established");
+                    self.setOnReceived(onMessage);
                     if (callback != null) {
                         callback();
                     }
@@ -120,3 +121,16 @@ var Client = {
 function random(max) {
     return Math.floor(Math.random()*max);
 }
+
+function onMessage(message) {
+    var resp, histRow;
+    histRow = document.createElement( "div" );
+    $(histRow).addClass('row');
+    resp = JSON.parse(message.data);
+    console.log("onMessage:" + resp.message);
+    $(histRow).html(resp.message);
+    $('#history').append(histRow);
+    $("div#messagesPopup div.modal-body p").html(resp.message);
+    $("div#messagesPopup").modal('show');
+}
+

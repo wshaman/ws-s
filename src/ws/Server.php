@@ -79,6 +79,9 @@ class Server extends WebSocketServer
 
     private function _sendMessage(int $user_id, int $task_id, string $message)
     {
+//        var_dump($user_id);
+//        var_dump($task_id);
+//        var_dump($message);
         if($user_id == 0){
             //@nb: send to all
             $users = $this->users;
@@ -92,7 +95,9 @@ class Server extends WebSocketServer
             return "No users matching criteria found";
         }
         foreach ($users as $user) {
-            $this->send($user, $message);
+            $json = new JsonRpcResponse(0);
+            $json->fromMessage( $message);
+            $this->send($user, $json->stringify());
         }
         $this->_setStatus(Constants::STATUS_OK);
         return "Sent messages: " . count($users);
@@ -124,7 +129,6 @@ class Server extends WebSocketServer
                 $response = $this->_userTasks($data->params[0]);
                 break;
             case "send-message":
-                var_dump($data->params);
                 $response = $this->_sendMessage(...$data->params);
                 break;
             default :

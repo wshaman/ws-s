@@ -23,6 +23,7 @@ class JsonRpcResponse
     public function fromString(string $message)
     {
         $p = json_decode($message, true);
+        if(!is_array($p)) return $this;
         $this->id = $p['id'];
         if(array_key_exists('message', $p)) $this->message = $p['message'];
         if(array_key_exists('error', $p)) $this->error = $p['error'];
